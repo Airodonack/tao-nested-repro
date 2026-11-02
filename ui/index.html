@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>tao nested loop repro</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="main.js" defer></script>
+  </head>
+  <body>
+    <p class="intro">
+      Open one of the two raw dialogs. While it is open, the page clock keeps counting, but the
+      backend ticks and the call that asks the window its size stop. Close the dialog: what was held
+      arrives in a burst, and the log below gets a "stalled" line. The plain invoke keeps answering,
+      because its answer doesn't go through tao's queue. The dialog plugin's dialogs don't run a
+      nested loop and stall nothing; neither does the 5 s sleep on a thread, the control. This
+      happens on Linux; on Windows and macOS the same app is expected not to stall.
+    </p>
+
+    <div class="panels">
+      <section>
+        <h2>Page clock</h2>
+        <div class="big" id="clock">0</div>
+        <p>The page's own timer, every 100 ms.</p>
+      </section>
+      <section>
+        <h2>Backend ticks</h2>
+        <div class="big" id="ticks">0</div>
+        <p>Last tick <span id="since">-</span> ago.</p>
+      </section>
+      <section>
+        <h2>Invoke round trip</h2>
+        <div class="pair">
+          <div><div class="mid" id="rtt">-</div>plain</div>
+          <div><div class="mid" id="rtt-window">-</div>asks the window its size</div>
+        </div>
+        <p>
+          <button id="ask">Ask the backend</button>
+          <button id="ask-window">Ask the window its size</button>
+          <label><input type="checkbox" id="auto-ask" /> both every 500 ms</label>
+        </p>
+      </section>
+    </div>
+
+    <div class="triggers">
+      <button data-cmd="plugin_message">GTK message dialog (plugin)</button>
+      <button data-cmd="plugin_file">GTK file chooser (plugin)</button>
+      <button data-cmd="raw_message">Raw gtk::MessageDialog::run</button>
+      <button data-cmd="raw_file">Raw gtk::FileChooserDialog::run</button>
+      <button data-cmd="sleep_on_thread">Sleep 5 s on a thread</button>
+    </div>
+
+    <pre id="log"></pre>
+  </body>
+</html>

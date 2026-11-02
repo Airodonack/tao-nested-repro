@@ -1,0 +1,21 @@
+[package]
+name = "tao-nested-repro"
+version = "0.1.0"
+description = "Shows tao's Linux event loop holding back events while a nested GLib main loop runs"
+authors = ["Airodonack"]
+license = "MIT"
+edition = "2021"
+publish = false
+
+[build-dependencies]
+tauri-build = { version = "=2.7.2", features = [] }
+
+[dependencies]
+# Pinned to the versions this was checked with: tauri 2.12.3 runs tao 0.37.1
+# and wry 0.57.1 (see Cargo.lock).
+tauri = { version = "=2.12.3", features = [] }
+tauri-plugin-dialog = "=2.8.4"
+
+# The raw dialogs are built with tao's own gtk 0.18.
+[target.'cfg(target_os = "linux")'.dependencies]
+gtk = "=0.18.2"
