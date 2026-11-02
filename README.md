@@ -11,7 +11,7 @@ Tested with tauri 2.12.3, tao 0.37.1, wry 0.57.1, tauri-plugin-dialog 2.8.4 and 
 With Tauri's Linux prerequisites installed:
 
 ```sh
-pnpm install && pnpm tauri dev
+npm install && npm tauri dev
 ```
 
 ## What you should see
